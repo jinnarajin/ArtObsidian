@@ -96,6 +96,35 @@
   #preview a { color: var(--accent); }
   a.wikilink { color: var(--accent); cursor: pointer; text-decoration: none; border-bottom: 1px dashed var(--accent); }
   a.wikilink.missing { color: var(--muted); border-bottom-color: var(--muted); }
+  a.tag {
+    color: var(--accent); background: var(--bg3); border-radius: 10px;
+    padding: 1px 8px; font-size: 0.85em; cursor: pointer; text-decoration: none;
+  }
+  #related { border-top: 1px solid var(--border); margin-top: 2em; padding-top: 0.8em; }
+  #related b { font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px; }
+  #related a {
+    display: inline-block; margin: 0 6px 6px 0; padding: 3px 10px; font-size: 12px;
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 12px;
+    color: var(--accent); cursor: pointer; text-decoration: none;
+  }
+  /* Spotlight */
+  #spot {
+    position: fixed; inset: 0; background: #0009; z-index: 50; display: none;
+    align-items: flex-start; justify-content: center; padding-top: 12vh;
+  }
+  #spotBox {
+    width: min(520px, 90vw); background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 10px; box-shadow: 0 12px 40px #000b; overflow: hidden;
+  }
+  #spotInput {
+    width: 100%; padding: 14px 16px; background: none; border: none;
+    border-bottom: 1px solid var(--border); color: var(--fg); font-size: 16px;
+  }
+  #spotInput:focus { outline: none; }
+  #spotList { max-height: 320px; overflow-y: auto; }
+  #spotList div { padding: 9px 16px; font-size: 14px; cursor: pointer; display: flex; justify-content: space-between; gap: 8px; }
+  #spotList div.sel { background: var(--border); color: var(--accent); }
+  #spotList small { color: var(--muted); font-size: 11px; flex-shrink: 0; }
   /* 자동완성 */
   #autocomplete {
     position: absolute; background: var(--bg2); border: 1px solid var(--border);
@@ -141,6 +170,12 @@
     <div id="preview"></div>
   </div>
   <div id="graphView"><canvas id="graphCanvas"></canvas></div>
+</div>
+<div id="spot">
+  <div id="spotBox">
+    <input id="spotInput" placeholder="노트 검색 (Cmd/Ctrl+K)">
+    <div id="spotList"></div>
+  </div>
 </div>
 
 <script>
@@ -282,6 +317,7 @@ function md(src) {
       .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
       .replace(/\*([^*]+)\*/g, '<i>$1</i>')
       .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/(^|\s)#([\w가-힣-]+)/g, '$1<a class="tag" data-tag="#$2">#$2</a>')
       .replace(/\[([^\]]+)\]\((https?:[^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
     const h = b.match(/^(#{1,6}) (.+)/);
     if (h) return `<h${h[1].length}>${inline(h[2])}</h${h[1].length}>`;
@@ -292,6 +328,34 @@ function md(src) {
     return '<p>' + inline(b).replace(/\n/g, '<br>') + '</p>';
   }).join('');
 }
+
+// ---- 유사도 (단어 TF 벡터 코사인) ----
+// ponytail: 임베딩 없이 단어 빈도 코사인 — 의미 유사도가 필요해지면 로컬 임베딩 모델로 교체
+const tokenize = s => (s.toLowerCase().match(/[\w가-힣]{2,}/g) || []);
+function tf(note) {
+  const v = new Map();
+  for (const w of tokenize(note.title + ' ' + note.body)) v.set(w, (v.get(w) || 0) + 1);
+  return v;
+}
+function cosine(a, b) {
+  let dot = 0, na = 0, nb = 0;
+  for (const [w, c] of a) { na += c * c; if (b.has(w)) dot += c * b.get(w); }
+  for (const c of b.values()) nb += c * c;
+  return dot / (Math.sqrt(na * nb) || 1);
+}
+function relatedHtml(note) {
+  const me = tf(note);
+  const top = notes
+    .filter(n => n.path !== note.path)
+    .map(n => ({ n, sim: cosine(me, tf(n)) }))
+    .filter(r => r.sim > 0.08)
+    .sort((a, b) => b.sim - a.sim)
+    .slice(0, 3);
+  if (!top.length) return '';
+  return '<div id="related"><b>관련 노트 (유사도)</b>' +
+    top.map(r => `<a data-rel="${esc(r.n.path)}">${esc(r.n.title)} · ${Math.round(r.sim * 100)}%</a>`).join('') + '</div>';
+}
+function renderPreview(n) { $('preview').innerHTML = md(n.body) + relatedHtml(n); }
 
 // ---- 사이드바 폴더 트리 ----
 function renderTree() {
@@ -326,7 +390,7 @@ function renderMain() {
   $('folderLabel').textContent = folderOf(n.path) ? folderOf(n.path) + ' /' : '';
   $('titleInput').value = n.title;
   $('editor').value = n.body;
-  $('preview').innerHTML = md(n.body);
+  renderPreview(n);
   $('editor').style.display = mode === 'read' ? 'none' : '';
   $('preview').style.display = mode === 'edit' ? 'none' : '';
 }
@@ -402,11 +466,15 @@ $('titleInput').onchange = async e => {   // blur/enter 시 실제 파일 rename
 $('editor').oninput = e => {
   const n = current(); if (!n) return;
   n.body = e.target.value; n.updated = Date.now();
-  $('preview').innerHTML = md(n.body);
+  renderPreview(n);
   scheduleSave(n);
   updateAutocomplete();
 };
 $('preview').onclick = async e => {
+  const tag = e.target.dataset.tag;
+  if (tag) { $('search').value = tag; renderTree(); return; }
+  const rel = e.target.dataset.rel;
+  if (rel) { openNote(rel); return; }
   const link = e.target.dataset.link;
   if (!link) return;
   const existing = byTitle(link);
@@ -480,6 +548,48 @@ $('editor').addEventListener('click', updateAutocomplete);
 $('autocomplete').onmousedown = e => {
   const i = e.target.closest('[data-i]')?.dataset.i;
   if (i !== undefined) { acInsert(+i); e.preventDefault(); }
+};
+
+// ---- Spotlight (Cmd/Ctrl+K) ----
+let spotItems = [], spotSel = 0;
+function spotRender() {
+  const q = $('spotInput').value.trim().toLowerCase();
+  if (!q) {
+    spotItems = [...notes].sort((a, b) => b.updated - a.updated).slice(0, 8);   // 빈 검색 = 최근 노트
+  } else {
+    spotItems = notes
+      .map(n => {
+        let score = 0;
+        if (n.title.toLowerCase().includes(q)) score += 100;
+        score += (n.body.toLowerCase().split(q).length - 1);
+        return { n, score };
+      })
+      .filter(r => r.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 8)
+      .map(r => r.n);
+  }
+  spotSel = Math.min(spotSel, Math.max(spotItems.length - 1, 0));
+  $('spotList').innerHTML = spotItems.map((n, i) =>
+    `<div class="${i === spotSel ? 'sel' : ''}" data-i="${i}"><span>${esc(n.title)}</span><small>${esc(folderOf(n.path))}</small></div>`).join('')
+    || '<div><span style="color:var(--muted)">결과 없음</span></div>';
+}
+function spotOpen() { $('spot').style.display = 'flex'; $('spotInput').value = ''; spotSel = 0; spotRender(); $('spotInput').focus(); }
+function spotClose() { $('spot').style.display = 'none'; }
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); spotOpen(); }
+  else if (e.key === 'Escape' && $('spot').style.display === 'flex') spotClose();
+});
+$('spotInput').oninput = spotRender;
+$('spotInput').onkeydown = e => {
+  if (e.key === 'ArrowDown') { spotSel = (spotSel + 1) % spotItems.length; spotRender(); e.preventDefault(); }
+  else if (e.key === 'ArrowUp') { spotSel = (spotSel - 1 + spotItems.length) % spotItems.length; spotRender(); e.preventDefault(); }
+  else if ((e.key === 'Enter' || e.key === 'Return') && spotItems[spotSel]) { openNote(spotItems[spotSel].path); spotClose(); }
+};
+$('spot').onmousedown = e => {
+  if (e.target === $('spot')) return spotClose();
+  const i = e.target.closest('[data-i]')?.dataset.i;
+  if (i !== undefined && spotItems[+i]) { openNote(spotItems[+i].path); spotClose(); }
 };
 
 // ---- 그래프 뷰 ----
