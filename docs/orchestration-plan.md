@@ -1,4 +1,11 @@
-# AI 오케스트레이션 실험 계획 (2026-08-06, v1)
+# AI 오케스트레이션 실험 계획 (2026-08-06, v2)
+
+## 현재 상태 (인수인계, 2026-08-06)
+
+- 참가자: 개발자(이 레포 주인, Claude Code Fable 5) + 디자이너(Codex GPT-sol)
+- **완료**: 이 레포에 팀 지침·회고 템플릿·기록 리마인드 hook 세팅 / upstream 레포 생성·푸시 → https://github.com/jinnarajin/artobsidian-lab (AGENTS.md 공통 지침, CLAUDE.md는 @AGENTS.md import)
+- **멘토와 결정 대기**: ① 머지 전략 (아래 비교표) ② upstream을 GitHub organization으로 transfer할지 (org면 레포 주인도 포크 가능해져 대칭 해결)
+- **결정 후 순서**: lab의 docs/spec.md 둘이 합의해 작성(기능 목록·산출물 정의·합격 기준) → 각자 포크 → 독립 진행, 회고 로그만 upstream PR로 공유
 
 디자이너 1명 + 개발자 1명이 같은 목표를 각자 다른 AI/방식으로 구현하고, 과정과 결과를 비교하며 배우는 실험. 이 문서는 지금까지의 합의와 보류 사항 정리.
 
