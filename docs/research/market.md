@@ -20,6 +20,10 @@
 - 주요 노트앱들이 AI 기능(볼트 대상 RAG Q&A, 인라인 생성)을 플러그인/내장 형태로 빠르게 채택 중 — Obsidian 커뮤니티 플러그인 1,700개+ 중 인기 상위가 AI 계열. (확인일 2026-08-10, [Cloudwards Obsidian 리뷰](https://www.cloudwards.net/obsidian-review/))
 - Obsidian이 네이티브 Canvas(비주얼 워크스페이스)를 확장하는 등 텍스트 노트앱의 비주얼 기능 강화 흐름. (확인일 2026-08-10, [AISO Tools](https://aisotools.com/blog/obsidian-review-2026))
 
+### 동기화 인프라 — iCloud 구독 보급률
+- 미국 Apple 사용자의 약 2/3(64%)가 iCloud 유료 스토리지(iCloud+)를 구독 — Apple 서비스 중 최고 보급률(Apple Music 42%, TV+ 32% 대비). iPhone 사용자 한정 시 59%. 무료 5GB는 2011년 이후 동결. (CIRP 2024 조사, 확인일 2026-08-10, [Cult of Mac](https://www.cultofmac.com/news/icloud-storage-adoption-apple-tv-plus-music-applecare-2024), [iDownloadBlog](https://www.idownloadblog.com/2024/08/21/cirp-survey-apple-icloud-storage-most-popular-apple-service/))
+- 시사점: iCloud Drive 기반 멀티기기(iPhone/iPad/Mac) 동기화는 다수 사용자에게 추가 비용 없이 동작. 단, 미구독자(약 1/3)를 위해 로컬 전용 모드도 완전 동작해야 함 — 텍스트 볼트는 무료 5GB로도 충분(이미지 축적 시 한계). 앱이 iCloud에 종속되지 않는 것 자체가 평문 파일 방침의 이점.
+
 ### 경쟁 서비스의 변화
 - Obsidian: 코어 무료 유지, Sync $4/월·Publish $8/월의 부가 서비스 모델. 모바일 앱 개선 지속. (확인일 2026-08-10, [eesel Obsidian pricing](https://www.eesel.ai/blog/obsidian-pricing))
 - Milanote: 창작자 대상 비주얼 보드 앱으로 자리 잡음. 무료 100카드 제한, 개인 유료 약 $9.99/월(연간). (확인일 2026-08-10, [Capterra](https://www.capterra.com/p/165790/Milanote/), [gappsy 리뷰](https://www.gappsy.com/tools/milanote/))
@@ -47,7 +51,7 @@
 | 강점(S) | 평문 .md + 옵시디언 볼트 호환 = 락인 제로, 로컬 우선 트렌드에 정합. SwiftUI 네이티브로 iPad/Mac 경험 우수 | local-first 선호 증가(Ink & Switch, Flexnote, 확인일 2026-08-10); Eagle·Milanote는 네이티브 iPad 마크다운 볼트를 제공하지 않음(3.3 조사) |
 | 약점(W) | 1인 개발 규모 — Obsidian 플러그인 생태계(1,700+)와 기능 폭 경쟁 불가. 동기화·협업 미제공 | Cloudwards Obsidian 리뷰(확인일 2026-08-10); 현 프로젝트 범위(개인 앱) |
 | 기회(O) | "텍스트 지식관리 × 이미지 레퍼런스"의 교차 영역이 비어 있음 — 노트앱은 이미지 관리가 약하고, 레퍼런스 툴은 노트·링크가 없음. 시장 자체도 고성장(CAGR ~20%) | 3.3 비교표: Eagle/PureRef는 노트 없음, Bear/Obsidian은 이미지 브라우징 약함; 시장 규모 출처(The Business Research Company, 확인일 2026-08-10) |
-| 위협(T) | Obsidian이 Canvas 등 비주얼 기능을 계속 흡수 중이며 플러그인으로 유사 워크플로 구성 가능. 신규 레퍼런스 툴(refern, Kosmik) 진입 활발 | AISO Tools Obsidian 2026 리뷰; refern/Kosmik 블로그(확인일 2026-08-10) |
+| 위협(T) | Obsidian이 Canvas 등 비주얼 기능을 계속 흡수 중이며 플러그인으로 유사 워크플로 구성 가능. 신규 레퍼런스 툴(refern, Kosmik) 진입 활발. 멀티기기 동기화가 iCloud 구독에 기대는 구조라면 미구독자(약 1/3, 이미지 볼트는 무료 5GB 초과 가능)에게 진입 장벽 — 핵심 가치가 "기기 간 이어지는 기록"일수록 치명적 | AISO Tools Obsidian 2026 리뷰; refern/Kosmik 블로그; CIRP 2024 iCloud 보급률 조사(확인일 2026-08-10) |
 
 ## 3.6 시장 조사 결론
 
