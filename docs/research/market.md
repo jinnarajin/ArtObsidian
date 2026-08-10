@@ -60,7 +60,7 @@
 | 구분 | 정의 | 추정치 | 근거 |
 |---|---|---|---|
 | TAM | 글로벌 노트테이킹/PKM 앱 시장 전체 | **약 $13.3B (2026)** | [The Business Research Company](https://www.thebusinessresearchcompany.com/report/note-taking-app-global-market-report) (3.2 재활용, 기관별 편차 큼 — $18.7B 추정도 존재) |
-| SAM | Apple 기기(iPad/Mac)로 작업하며 아이디어·자료 기록에 돈을 쓸 의사가 있는 시각 창작자 | **약 300만~600만 명** (추정) · 1회 구매 $10 가정 시 금액 환산 약 **$30M~$60M** | Procreate 누적 사용자 3,000만+·프로 워크플로 250만 ([Procreate](https://procreate.com/procreate), [Procreate 통계](https://randomdrawinggenerator.com/procreate-statistics/)); 미국 그래픽 디자이너 약 50.8만 명 ([BLS](https://www.bls.gov/ooh/arts-and-design/graphic-designers.htm)); 미국 시각·공연예술 학사 학위 연 9만 건 ([NCES](https://nces.ed.gov/programs/digest/d22/tables/dt22_325.95.asp)); DeviantArt 등록 사용자 1.1억 ([DeviantArt 공식](https://www.deviantart.com/team/art/2026-110M-users-and-a-new-era-for-DeviantArt-1295433810)) |
+| SAM | Apple 기기(iPad/Mac)로 작업하며 아이디어·자료 기록에 돈을 쓸 의사가 있는 시각 창작자 | **약 150만~300만 명** (2026-08-10 1차 검증으로 하향 조정, 조정 전 300만~600만) · 1회 구매 $10 가정 시 금액 환산 약 **$15M~$30M** | Procreate 누적 사용자 3,000만+·프로 워크플로 250만 ([Procreate](https://procreate.com/procreate), [Procreate 통계](https://randomdrawinggenerator.com/procreate-statistics/)); 미국 그래픽 디자이너 약 50.8만 명 ([BLS](https://www.bls.gov/ooh/arts-and-design/graphic-designers.htm)); 미국 시각·공연예술 학사 학위 연 9만 건 ([NCES](https://nces.ed.gov/programs/digest/d22/tables/dt22_325.95.asp)); DeviantArt 등록 사용자 1.1억 ([DeviantArt 공식](https://www.deviantart.com/team/art/2026-110M-users-and-a-new-era-for-DeviantArt-1295433810)) |
 | SOM | 초기 도달 가능: 옵시디언 사용자 중 비주얼 창작 워크플로 수요 교집합 + 창작자 커뮤니티 유입 | **약 5천~2만 명** (보수적 추정) · 금액 환산 약 **$50K~$200K** | Obsidian 월간 활성 사용자 약 150만 ([Fueler](https://fueler.io/blog/obsidian-usage-revenue-valuation-growth-statistics), [BigGo](https://finance.biggo.com/news/iVboYp0Bga3fZL9MJEv_)) 중 교집합 가정 (아래 로직) |
 
 ### SAM 추정 로직 (가정 체인)
@@ -75,6 +75,27 @@
 
 ### 추정의 한계
 TAM은 조사기관별 편차가 커(같은 해 $13.3B vs $18.7B) 절대값보다 성장률(CAGR ~20%) 신호로만 써야 한다. SAM의 핵심 가정인 "기록 습관 보유 비율 10~20%"와 SOM의 "옵시디언 내 비주얼 창작자 비율 3~5%"는 직접 통계가 없는 감각적 추정치로, 실제 검증(커뮤니티 설문, 랜딩페이지 전환율)으로 교체되어야 한다. Procreate·DeviantArt 수치는 누적/등록 기준이라 활성 사용자를 과대평가하며, 반대로 BLS·NCES는 미국 한정 직업·학위 통계라 취미 창작자를 누락해 과소평가한다. 모든 수치의 확인일은 2026-08-10.
+
+### 가정 검증 (1차 데스크 검증, 2026-08-10)
+
+두 핵심 가정을 독립 대리 지표로 교차 검증했다. 목표는 확증이 아닌 검증 — 반박 근거도 동등하게 탐색.
+
+**가정 A: 시각 창작자 중 "텍스트+이미지 체계적 기록" 습관 비율 10~20% → 판정: 부분 반박 (5~10%로 하향)**
+
+- Milanote(창작자용 비주얼 노트 툴, 이 습관의 가장 직접적인 프록시): 유료 고객 약 3.5만, 안드로이드 다운로드 약 120만, 2024 매출 $2.8M ([Fueler Milanote 통계](https://fueler.io/blog/milanote-usage-revenue-valuation-growth-statistics), 확인일 2026-08-10). Procreate 프로 워크플로 250만 대비 유료 전환 ~1.4% 수준 — "돈 내고 체계적으로 기록"하는 층이 한 자릿수 %임을 시사.
+- Eagle(레퍼런스 관리 툴): 사용자 약 40만+ ([Eagle 공식](https://en.eagle.cool/), 확인일 2026-08-10). 창작자 하한 250만 기준 ~16%, 상한 3,000만 기준 ~1.3%. 상단 10~20%는 가장 좁은 모수를 쓸 때만 성립.
+- 반박 방향 종합: 전용 툴 사용률 프록시들이 일관되게 1~16% 범위에 몰리고, "체계적 습관"은 툴 설치보다 좁은 개념이므로 상단 20%는 과대. **5~10%로 조정** → SAM = 250만~3,000만 × 5~10%의 보수적 교집합 ≈ **150만~300만 명, $15M~$30M** (상단 표 반영).
+- 한계: "스케치북/저널 습관 보유율" 류의 직접 설문 통계는 데스크 검증으로 확보 실패 — 정량 설문 데이터 부재.
+
+**가정 B: Obsidian MAU 중 미술·비주얼 창작 워크플로 비율 3~5% → 판정: 부분 지지 (유지)**
+
+- 지지: Excalidraw가 전체 커뮤니티 플러그인 다운로드 1위(약 711만, 2위 Dataview 473만 대비 1.5배) ([obsidianstats.com](https://www.obsidianstats.com/most-downloaded), 확인일 2026-08-10) — 옵시디언 내 시각적 기록 수요가 최상위권임을 지지.
+- 반박: 상위 20개 플러그인 중 이미지/캔버스 계열은 Excalidraw 단 1개이고, Excalidraw는 다이어그램·필기 등 범용 용도가 다수라 "미술 창작 워크플로"로 좁히면 훨씬 작아진다. r/ObsidianMD(구독자 약 34.4만, [subredditstats](https://subredditstats.com/r/ObsidianMD), 확인일 2026-08-10)에서도 아트 워크플로 논의가 주류라는 신호는 확인되지 않음.
+- 종합: 시각 수요는 강하나(상방 지지) 미술 특화는 좁음(하방 견제) — 3~5% 범위 자체는 합리적 중간값으로 **유지**. SOM 수치 변경 없음.
+
+**데스크 검증의 한계 (직접 검증 필요 항목)**
+- 공식 Obsidian 커뮤니티 설문(직업 분포)은 공개된 것을 찾지 못함 — r/ObsidianMD 자체 설문 또는 랜딩페이지 전환율 테스트로만 가정 B를 실측 가능.
+- 가정 A의 "습관 보유율"은 창작자 대상 직접 설문 외 대체 불가 — 툴 사용률은 하한 프록시일 뿐.
 
 ## 3.6 시장 조사 결론
 
