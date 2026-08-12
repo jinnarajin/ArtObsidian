@@ -10,3 +10,7 @@
 - https://obsidian.md/license — Obsidian Catalyst 라이선스: 유료 후원자에게 인사이더 빌드·Discord 뱃지·베타 우선권을 주는 커뮤니티 주도 성장 모델. (확인일 2026-08-10)
 - https://www.kickstart.tools/blog/the-ultimate-indie-ios-app-launch-checklist — 인디 iOS 출시 체크리스트: 출시 3주 전 애플 피처링 노미네이션, 외부 TestFlight, 프리오더(수동 릴리즈), 화·수요일 출시 등 실무 타임라인. (확인일 2026-08-10)
 - https://getlaunchlist.com/waitlist-for-mobile-apps — 대기자 명단 도구 사례: "추천하면 TestFlight 줄 앞당겨주기" 리퍼럴로 출시일 다운로드를 집중시키는 구조. (확인일 2026-08-10)
+
+## 사용자 설문 (2026-08-12)
+
+- [아이디어·영감 기록 경험 설문 (Google Forms)](https://docs.google.com/forms/d/e/1FAIpQLSc70YP3ls4muFjkJf_jIZn23lb-Jdt5FEoPzZIKBWFi1Aci2w/viewform) — 창작자 대상, 연령·직업·활동 분야 + 기록 경험 문항, 약 5분, 리워드 스타벅스 쿠폰 3명. 2026-08-12 배포 시작, 결과는 2026-08-14(금) 기획 통합에 반영 예정 (이슈 #3·#4 검증용).
