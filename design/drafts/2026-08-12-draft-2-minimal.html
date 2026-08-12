@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ArtObsidian — 초안 2 · 도구적 미니멀</title>
+<style>
+  /* 초안 2 — 도구적 미니멀 · 모노크롬 · 콘텐츠 90% */
+  :root{
+    --paper:#f4f1ea;        /* 크림 종이색 */
+    --paper-dim:#eeebe2;
+    --ink:#26241f;          /* 웜 블랙 */
+    --ink-soft:#5c584f;
+    --ink-faint:#8f8a7e;
+    --rule:#d8d3c6;         /* 헤어라인 괘선 */
+    --link:#26241f;
+    --sketch:#c9c3b4;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    font-family:"Apple SD Gothic Neo","Noto Sans KR","Helvetica Neue",sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    font-size:15px;
+    line-height:1.75;
+    letter-spacing:-0.01em;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{display:flex;flex-direction:column;height:100vh;min-height:600px}
+
+  /* ── 상단 바 ───────────────────── */
+  header{
+    display:flex;align-items:center;gap:1.5rem;
+    padding:0 1.25rem;height:44px;flex:none;
+    border-bottom:1px solid var(--rule);
+    font-size:12.5px;color:var(--ink-soft);
+  }
+  header .mark{font-weight:700;color:var(--ink);letter-spacing:.02em}
+  .crumb{color:var(--ink-faint)}
+  .search{
+    margin-left:auto;display:flex;align-items:center;gap:.6rem;
+    border:1px solid var(--rule);padding:.2rem .7rem;
+    color:var(--ink-faint);cursor:pointer;background:transparent;
+    font:inherit;font-size:12.5px;
+  }
+  .search kbd{
+    font-family:ui-monospace,Menlo,monospace;font-size:11px;
+    color:var(--ink-soft);border:1px solid var(--rule);padding:0 .3em;
+  }
+
+  /* ── 본체 3단 ───────────────────── */
+  .body{display:flex;flex:1;min-height:0}
+
+  /* 좌: 폴더 트리 — 텍스트만 */
+  nav{
+    width:216px;flex:none;overflow-y:auto;
+    border-right:1px solid var(--rule);
+    padding:1.4rem 0 2rem;
+    font-size:13px;color:var(--ink-soft);
+    background:var(--paper-dim);
+  }
+  nav .sec{
+    padding:0 1.25rem;margin-bottom:.35rem;
+    font-size:11px;letter-spacing:.14em;color:var(--ink-faint);
+    text-transform:uppercase;
+  }
+  nav ul{list-style:none}
+  nav li{line-height:2}
+  nav a{
+    display:block;padding:0 1.25rem;color:inherit;text-decoration:none;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  nav a:hover{color:var(--ink)}
+  nav .folder{cursor:pointer;user-select:none}
+  nav .folder::before{content:"▸ ";color:var(--ink-faint);font-size:10px}
+  nav .open > .folder::before{content:"▾ "}
+  nav .open > ul{margin-left:.9rem}
+  nav .closed > ul{display:none}
+  nav .now a{color:var(--ink);font-weight:600;background:var(--paper)}
+  nav hr{border:0;border-top:1px solid var(--rule);margin:1.1rem 1.25rem}
+
+  /* 중앙: 노트 */
+  main{flex:1;overflow-y:auto;min-width:0}
+  article{max-width:46rem;margin:0 auto;padding:3.2rem 3rem 5rem}
+  article h1{
+    font-size:1.9rem;font-weight:700;letter-spacing:-0.02em;
+    line-height:1.3;margin-bottom:.4rem;
+  }
+  .meta{
+    font-size:12px;color:var(--ink-faint);
+    padding-bottom:1.6rem;margin-bottom:2rem;
+    border-bottom:1px solid var(--rule);
+  }
+  .meta .tag{color:var(--ink-soft)}
+  article h2{
+    font-size:1.05rem;font-weight:700;margin:2.4rem 0 .8rem;
+  }
+  article p{margin-bottom:1rem;color:var(--ink)}
+  article ul{margin:0 0 1rem 1.2rem}
+  article li{margin-bottom:.3rem}
+  .wikilink{
+    color:var(--link);text-decoration:none;
+    border-bottom:1px solid var(--ink-soft);
+    padding-bottom:1px;
+  }
+  .wikilink:hover{border-bottom-width:2px}
+
+  /* 그림 placeholder — CSS/SVG 스케치 표현 */
+  figure{margin:1.8rem 0}
+  .ph{
+    width:100%;display:block;background:#e7e3d8;
+    border:1px solid var(--rule);
+  }
+  figure figcaption{
+    font-size:12px;color:var(--ink-faint);margin-top:.5rem;
+    letter-spacing:.01em;
+  }
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+
+  /* 우: 관련 노트 */
+  aside{
+    width:224px;flex:none;overflow-y:auto;
+    border-left:1px solid var(--rule);
+    padding:1.6rem 1.25rem 2rem;
+    font-size:12.5px;color:var(--ink-soft);
+  }
+  aside h3{
+    font-size:11px;letter-spacing:.14em;color:var(--ink-faint);
+    font-weight:600;margin-bottom:.9rem;text-transform:uppercase;
+  }
+  aside ul{list-style:none}
+  aside li{
+    padding:.55rem 0;border-bottom:1px solid var(--rule);line-height:1.5;
+  }
+  aside li:first-child{border-top:1px solid var(--rule)}
+  aside a{color:var(--ink);text-decoration:none;display:block}
+  aside a:hover{text-decoration:underline;text-underline-offset:3px}
+  aside .why{display:block;font-size:11px;color:var(--ink-faint)}
+  aside .block+h3{margin-top:2rem}
+
+  @media (max-width:900px){ aside{display:none} }
+  @media (max-width:700px){ nav{display:none} article{padding:2rem 1.4rem 4rem} }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header>
+    <span class="mark">ArtObsidian</span>
+    <span class="crumb">Resource / 인체 / 인체 크로키.md</span>
+    <button class="search" type="button">빠른 검색 <kbd>⌘K</kbd></button>
+  </header>
+
+  <div class="body">
+
+    <nav>
+      <div class="sec">Vault</div>
+      <ul>
+        <li class="open">
+          <a class="folder">Resource</a>
+          <ul>
+            <li class="open">
+              <a class="folder">인체</a>
+              <ul>
+                <li class="now"><a href="#">인체 크로키</a></li>
+                <li><a href="#">손 그리기 자료</a></li>
+                <li><a href="#">동세와 무게중심</a></li>
+              </ul>
+            </li>
+            <li class="closed"><a class="folder">색채</a><ul><li><a href="#">색채 대비 연구</a></li></ul></li>
+            <li class="closed"><a class="folder">구도</a><ul><li><a href="#">삼분할</a></li></ul></li>
+            <li class="closed"><a class="folder">작가 레퍼런스</a><ul><li><a href="#">김정기 선화</a></li></ul></li>
+          </ul>
+        </li>
+      </ul>
+      <hr>
+      <div class="sec">Project</div>
+      <ul>
+        <li><a href="#">8월 크로키 30일 챌린지</a></li>
+        <li><a href="#">일러스트 포트폴리오 v2</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <article>
+        <h1>인체 크로키</h1>
+        <div class="meta">2026-08-12 수정 · <span class="tag">#인체</span> <span class="tag">#크로키</span> <span class="tag">#연습</span></div>
+
+        <p>1~5분 안에 인체의 <a class="wikilink" href="#">[[동세와 무게중심]]</a>을 잡는 연습. 디테일보다 리듬 — 머리에서 지지하는 발까지 흐르는 액션 라인 하나를 먼저 긋고, 그 위에 덩어리를 얹는다.</p>
+
+        <h2>오늘의 관찰</h2>
+        <ul>
+          <li>골반의 기울기가 어깨의 반대 기울기를 만든다 (콘트라포스토)</li>
+          <li>2분 크로키에서는 손·발을 삼각형 덩어리로만 처리</li>
+          <li>선이 끊길 때마다 무게가 죽는다 — 팔꿈치에서 멈추지 말 것</li>
+        </ul>
+
+        <figure>
+          <svg class="ph" viewBox="0 0 640 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="크로키 스케치 자리">
+            <rect width="640" height="300" fill="#e7e3d8"/>
+            <g stroke="#8f8a7e" stroke-width="2.5" fill="none" stroke-linecap="round">
+              <path d="M180 50 C185 90 160 140 175 190 C185 225 165 255 150 275"/>
+              <circle cx="182" cy="42" r="16"/>
+              <path d="M178 80 C150 100 130 130 138 160"/>
+              <path d="M186 82 C215 105 228 140 218 165"/>
+              <path d="M176 190 C205 215 215 250 222 274"/>
+            </g>
+            <g stroke="#a8a294" stroke-width="2" fill="none" stroke-linecap="round">
+              <path d="M430 60 C450 110 415 160 445 210 C455 240 440 260 430 278"/>
+              <circle cx="428" cy="50" r="14"/>
+              <path d="M425 95 C395 110 380 145 392 170"/>
+              <path d="M436 96 C470 112 480 150 468 178"/>
+            </g>
+            <line x1="120" y1="284" x2="520" y2="284" stroke="#c9c3b4" stroke-width="1.5"/>
+          </svg>
+          <figcaption>2분 크로키 — 액션 라인 위주, 2026-08-12 아침 세션</figcaption>
+        </figure>
+
+        <h2>덩어리 단순화</h2>
+        <p>흉곽은 달걀, 골반은 그릇으로. 두 덩어리 사이의 비틀림이 곧 동세다. <a class="wikilink" href="#">[[손 그리기 자료]]</a>의 단순화 방식과 같은 원리.</p>
+
+        <div class="row2">
+          <figure>
+            <svg class="ph" viewBox="0 0 300 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="흉곽 덩어리 스케치 자리">
+              <rect width="300" height="220" fill="#e7e3d8"/>
+              <ellipse cx="150" cy="95" rx="55" ry="72" fill="none" stroke="#8f8a7e" stroke-width="2.5" transform="rotate(-8 150 95)"/>
+              <path d="M105 100 C130 118 175 118 198 92" fill="none" stroke="#a8a294" stroke-width="2"/>
+              <line x1="150" y1="20" x2="150" y2="200" stroke="#c9c3b4" stroke-width="1.5" stroke-dasharray="4 5"/>
+            </svg>
+            <figcaption>흉곽 = 달걀</figcaption>
+          </figure>
+          <figure>
+            <svg class="ph" viewBox="0 0 300 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="골반 덩어리 스케치 자리">
+              <rect width="300" height="220" fill="#e7e3d8"/>
+              <path d="M85 90 C90 150 130 175 150 175 C170 175 210 150 215 90" fill="none" stroke="#8f8a7e" stroke-width="2.5"/>
+              <path d="M85 90 C110 110 190 110 215 90" fill="none" stroke="#8f8a7e" stroke-width="2.5"/>
+              <path d="M120 175 L112 205 M180 175 L188 205" stroke="#a8a294" stroke-width="2"/>
+            </svg>
+            <figcaption>골반 = 그릇, 기울기가 동세</figcaption>
+          </figure>
+        </div>
+
+        <h2>다음 연습</h2>
+        <p>명암을 얹기 전에 <a class="wikilink" href="#">[[색채 대비 연구]]</a>에서 정리한 2단계 명도만으로 덩어리 구분해 보기. 참고 선화는 <a class="wikilink" href="#">[[김정기 선화]]</a>.</p>
+      </article>
+    </main>
+
+    <aside>
+      <div class="block">
+        <h3>관련 노트</h3>
+        <ul>
+          <li><a href="#">동세와 무게중심</a><span class="why">링크 2회 · 같은 폴더</span></li>
+          <li><a href="#">손 그리기 자료</a><span class="why">링크됨</span></li>
+          <li><a href="#">색채 대비 연구</a><span class="why">링크됨</span></li>
+          <li><a href="#">김정기 선화</a><span class="why">링크됨</span></li>
+          <li><a href="#">8월 크로키 30일 챌린지</a><span class="why">태그 #크로키</span></li>
+        </ul>
+      </div>
+      <h3>백링크</h3>
+      <div class="block">
+        <ul>
+          <li><a href="#">일러스트 포트폴리오 v2</a><span class="why">"…크로키에서 잡은 동세를…"</span></li>
+        </ul>
+      </div>
+    </aside>
+
+  </div>
+</div>
+</body>
+</html>
