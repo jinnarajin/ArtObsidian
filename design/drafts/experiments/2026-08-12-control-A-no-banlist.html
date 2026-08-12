@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArtObsidian — 인체 크로키</title>
+<style>
+:root{
+  --paper:#f3eee4;
+  --paper-deep:#ece5d6;
+  --ink:#2e2a24;
+  --ink-soft:#6b645a;
+  --ink-faint:#9a9285;
+  --rule:rgba(46,42,36,.16);
+  --accent:#a4501f; /* 번트 시에나 */
+  --tape:rgba(228,200,138,.75);
+  --serif:'Nanum Myeongjo','Noto Serif KR',Georgia,serif;
+  --sans:-apple-system,'Apple SD Gothic Neo','Pretendard',sans-serif;
+  --mono:'SF Mono',ui-monospace,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{
+  font-family:var(--sans);
+  color:var(--ink);
+  background:var(--paper);
+  font-size:15px;
+  line-height:1.75;
+  overflow:hidden;
+}
+/* 종이 노이즈 — 은은하게 한 겹 */
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:999;
+  opacity:.5;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.42 0 0 0 0 0.39 0 0 0 0 0.34 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.app{display:grid;grid-template-columns:236px 1fr 250px;grid-template-rows:52px 1fr;height:100vh}
+
+/* ── 상단 바 ── */
+header{
+  grid-column:1/-1;display:flex;align-items:center;gap:16px;
+  padding:0 20px;border-bottom:1px solid var(--rule);
+  background:var(--paper);
+}
+.wordmark{font-family:var(--serif);font-weight:800;font-size:17px;letter-spacing:.02em}
+.wordmark em{font-style:normal;color:var(--accent)}
+.crumb{font-size:12.5px;color:var(--ink-faint)}
+.crumb b{color:var(--ink-soft);font-weight:500}
+.search{
+  margin-left:auto;display:flex;align-items:center;gap:8px;
+  border:1px solid var(--rule);border-radius:3px;
+  padding:5px 12px;width:280px;color:var(--ink-faint);
+  font-size:13px;background:rgba(255,255,255,.35);cursor:pointer;
+}
+.search:hover{border-color:var(--ink-faint)}
+.search kbd{
+  margin-left:auto;font-family:var(--mono);font-size:11px;
+  border:1px solid var(--rule);border-radius:3px;padding:0 5px;color:var(--ink-soft);
+}
+.mode{display:flex;border:1px solid var(--rule);border-radius:3px;overflow:hidden;font-size:12px}
+.mode span{padding:4px 12px;color:var(--ink-faint);cursor:pointer}
+.mode .on{background:var(--ink);color:var(--paper)}
+
+/* ── 좌측 폴더 트리 ── */
+nav{
+  border-right:1px solid var(--rule);
+  background:var(--paper-deep);
+  padding:18px 0;overflow-y:auto;font-size:13.5px;
+}
+.nav-label{
+  font-size:10.5px;letter-spacing:.14em;color:var(--ink-faint);
+  padding:0 18px 8px;font-weight:600;
+}
+.tree{list-style:none}
+.tree li{padding:5px 18px;color:var(--ink-soft);cursor:pointer;display:flex;align-items:center;gap:7px}
+.tree li:hover{color:var(--ink)}
+.tree .folder::before{content:"▸";font-size:10px;color:var(--ink-faint);transition:transform .15s}
+.tree .open::before{transform:rotate(90deg)}
+.tree .sub{padding-left:34px}
+.tree .active{
+  color:var(--ink);font-weight:600;position:relative;
+  background:linear-gradient(90deg,rgba(164,80,31,.10),transparent 85%);
+}
+.tree .active::after{
+  content:"";position:absolute;left:0;top:4px;bottom:4px;width:2px;background:var(--accent);
+}
+.tags{padding:20px 18px 0}
+.tags .chip{
+  display:inline-block;font-size:12px;color:var(--ink-soft);
+  border:1px solid var(--rule);border-radius:10px;padding:1px 9px;margin:0 4px 6px 0;
+  background:rgba(255,255,255,.3);
+}
+
+/* ── 본문 ── */
+main{overflow-y:auto;padding:44px 56px 80px}
+article{max-width:640px;margin:0 auto}
+.note-meta{font-size:11.5px;letter-spacing:.1em;color:var(--ink-faint);margin-bottom:10px}
+h1{
+  font-family:var(--serif);font-size:34px;font-weight:800;
+  line-height:1.3;padding-bottom:18px;margin-bottom:26px;
+  border-bottom:1px solid var(--rule);
+}
+p{margin-bottom:1.2em;color:#3d3830}
+h2{
+  font-family:var(--serif);font-size:20px;font-weight:800;
+  margin:2em 0 .7em;
+}
+a.wiki{
+  color:var(--accent);text-decoration:none;
+  border-bottom:1px dashed rgba(164,80,31,.5);
+}
+a.wiki:hover{background:rgba(164,80,31,.08)}
+.tag{color:var(--ink-faint);font-size:.92em}
+
+/* 이미지 — 스케치북에 붙인 종이 */
+figure{margin:2.2em 0;position:relative}
+.plate{
+  background:#fbf8f1;padding:10px 10px 8px;
+  border:1px solid rgba(46,42,36,.1);
+  box-shadow:0 1px 3px rgba(46,42,36,.14),0 4px 10px rgba(46,42,36,.07);
+}
+figure.tilt-l{transform:rotate(-.7deg)}
+figure.tilt-r{transform:rotate(.5deg)}
+/* 마스킹 테이프 — 딱 한 곳 */
+.tape-top::before{
+  content:"";position:absolute;top:-10px;left:50%;transform:translateX(-50%) rotate(-2deg);
+  width:88px;height:22px;background:var(--tape);
+  box-shadow:0 1px 2px rgba(46,42,36,.12);z-index:2;
+  opacity:.9;
+}
+.plate svg{display:block;width:100%;height:auto}
+figcaption{
+  font-size:12.5px;color:var(--ink-faint);margin-top:9px;
+  display:flex;justify-content:space-between;
+}
+figcaption i{font-style:normal;font-family:var(--serif)}
+.two-up{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+
+/* ── 우측 관련 노트 ── */
+aside{
+  border-left:1px solid var(--rule);padding:26px 20px;overflow-y:auto;
+}
+.aside-label{
+  font-family:var(--serif);font-size:13px;font-weight:800;
+  padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid var(--rule);
+}
+.rel{list-style:none}
+.rel li{padding:9px 0;border-bottom:1px solid rgba(46,42,36,.08);cursor:pointer}
+.rel a{color:var(--ink);text-decoration:none;font-size:13.5px;font-weight:500}
+.rel a:hover{color:var(--accent)}
+.rel small{display:block;color:var(--ink-faint);font-size:11.5px;line-height:1.5;margin-top:2px}
+.rel .score{font-family:var(--mono);font-size:10px;color:var(--accent);margin-left:6px}
+.backlink-label{margin-top:28px}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="wordmark">Art<em>Obsidian</em></div>
+    <div class="crumb">Resource / 미술옵시디언 / 인체 / <b>인체 크로키</b></div>
+    <div class="search">⌕ 빠른 검색<kbd>⌘K</kbd></div>
+    <div class="mode"><span class="on">읽기</span><span>편집</span></div>
+  </header>
+
+  <nav>
+    <div class="nav-label">볼트</div>
+    <ul class="tree">
+      <li class="folder open">인체</li>
+      <li class="sub active">인체 크로키</li>
+      <li class="sub">손 드로잉 연습</li>
+      <li class="sub">토르소 구조</li>
+      <li class="folder">색채</li>
+      <li class="folder">구도·투시</li>
+      <li class="folder">작가 연구</li>
+      <li class="folder">재료·도구</li>
+    </ul>
+    <div class="nav-label tags">태그</div>
+    <div class="tags" style="padding-top:6px">
+      <span class="chip">#크로키</span><span class="chip">#인체</span><span class="chip">#연습기록</span><span class="chip">#해부학</span>
+    </div>
+  </nav>
+
+  <main>
+    <article>
+      <div class="note-meta">2026.08.02 수정 · 인체 / 크로키</div>
+      <h1>인체 크로키</h1>
+      <p>하루 30분, 1분 크로키 20장 + 5분 크로키 2장. 핵심은 <a class="wiki" href="#">[[제스처 드로잉]]</a>의 흐름선을 먼저 잡고 형태는 나중에 얹는 것. 윤곽부터 따라가면 뻣뻣해진다.</p>
+      <p>동세의 중심축(action line)을 하나의 곡선으로 요약하고, 골반과 흉곽의 기울기 대비만 정확해도 자세가 산다. 세부 근육은 <a class="wiki" href="#">[[해부학 노트]]</a> 참고. <span class="tag">#크로키 #인체</span></p>
+
+      <figure class="tilt-l tape-top">
+        <div class="plate">
+          <svg viewBox="0 0 640 380" role="img" aria-label="크로키 스케치 자리">
+            <rect width="640" height="380" fill="#f6f1e6"/>
+            <g stroke="#5a5348" fill="none" stroke-width="2.5" stroke-linecap="round">
+              <path d="M180 60 C200 120 170 190 195 250 C210 290 190 330 175 350"/>
+              <path d="M180 95 C230 105 275 140 300 200 C315 240 300 300 285 345"/>
+              <ellipse cx="185" cy="55" rx="16" ry="20"/>
+              <path d="M195 140 C240 130 280 150 310 145"/>
+              <path d="M420 340 C430 250 460 180 445 90" stroke-width="1.5" opacity=".55"/>
+              <path d="M445 90 C470 130 500 200 480 280 C472 310 478 330 490 345" stroke-width="1.5" opacity=".55"/>
+              <ellipse cx="448" cy="78" rx="13" ry="16" stroke-width="1.5" opacity=".55"/>
+            </g>
+            <text x="596" y="360" font-family="Georgia,serif" font-size="13" fill="#9a9285" text-anchor="end" font-style="italic">1min ×2</text>
+          </svg>
+        </div>
+        <figcaption><i>1분 크로키 — 동세선 우선</i><span>2026.08.02</span></figcaption>
+      </figure>
+
+      <h2>골반–흉곽 대비</h2>
+      <p>콘트라포스토 자세에서 체중을 받는 다리 쪽 골반이 올라가고 어깨는 반대로 내려간다. 이 X자 대비를 놓치면 서 있는 그림이 전부 부동자세가 된다. <a class="wiki" href="#">[[콘트라포스토]]</a>에 스탠 프로코펜코 강의 정리해둠.</p>
+
+      <div class="two-up">
+        <figure class="tilt-r">
+          <div class="plate">
+            <svg viewBox="0 0 300 220" role="img" aria-label="골반 기울기 도해">
+              <rect width="300" height="220" fill="#f6f1e6"/>
+              <g stroke="#5a5348" fill="none" stroke-width="2" stroke-linecap="round">
+                <line x1="70" y1="70" x2="230" y2="55"/>
+                <line x1="85" y1="150" x2="215" y2="170"/>
+                <path d="M150 62 C155 95 145 125 150 160"/>
+                <circle cx="150" cy="40" r="14"/>
+              </g>
+              <g fill="#a4501f" font-family="Georgia,serif" font-size="11" font-style="italic">
+                <text x="238" y="58">어깨 ↘</text>
+                <text x="223" y="176">골반 ↗</text>
+              </g>
+            </svg>
+          </div>
+          <figcaption><i>기울기 대비 도해</i></figcaption>
+        </figure>
+        <figure>
+          <div class="plate">
+            <svg viewBox="0 0 300 220" role="img" aria-label="5분 크로키 자리">
+              <rect width="300" height="220" fill="#f6f1e6"/>
+              <g stroke="#5a5348" fill="none" stroke-width="2" stroke-linecap="round">
+                <path d="M110 30 C140 60 120 110 150 150 C165 175 150 200 145 210"/>
+                <path d="M110 55 C160 70 195 110 185 160 C182 180 195 200 205 210"/>
+                <ellipse cx="112" cy="28" rx="11" ry="14"/>
+                <path d="M120 90 C160 82 185 100 210 92"/>
+              </g>
+            </svg>
+          </div>
+          <figcaption><i>5분 — 앉은 자세</i></figcaption>
+        </figure>
+      </div>
+
+      <h2>이번 주 관찰</h2>
+      <p>손목에 힘이 들어가면 선이 짧게 끊긴다. 어깨로 긋기. 다음 주제는 <a class="wiki" href="#">[[옷 주름 연구]]</a>와 연결해서 옷 입은 크로키로. <span class="tag">#연습기록</span></p>
+    </article>
+  </main>
+
+  <aside>
+    <div class="aside-label">관련 노트</div>
+    <ul class="rel">
+      <li><a href="#">제스처 드로잉<span class="score">.91</span></a><small>흐름선·리듬 — 크로키의 뼈대</small></li>
+      <li><a href="#">해부학 노트<span class="score">.84</span></a><small>흉곽·골반 블록, 주요 랜드마크</small></li>
+      <li><a href="#">콘트라포스토<span class="score">.78</span></a><small>체중 이동과 축의 대비</small></li>
+      <li><a href="#">손 드로잉 연습<span class="score">.65</span></a><small>손은 별도 세션으로 분리</small></li>
+    </ul>
+    <div class="aside-label backlink-label">백링크</div>
+    <ul class="rel">
+      <li><a href="#">주간 연습 계획</a><small>"…크로키는 [[인체 크로키]] 기준으로"</small></li>
+      <li><a href="#">킴 정 기 작가 연구</a><small>"선의 확신 → [[인체 크로키]] 적용"</small></li>
+    </ul>
+  </aside>
+</div>
+</body>
+</html>
